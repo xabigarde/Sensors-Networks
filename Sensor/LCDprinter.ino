@@ -189,8 +189,17 @@ void printAccelerometerValues(double x, double y, double z){
   */
 }
 
-void printMaxAccel(double maxX, double maxY, double maxZ){
-	
+void printAccel(String what, double maxX, double maxY, double maxZ){
+  clearLCD();
+  selectLineOne();
+  LCD.print(what+": ");
+  LCD.print("X: ");
+  printDouble(x, 2);
+  selectLineTwo();
+  LCD.print("Y: ");
+  printDouble(y, 2);
+  LCD.print("  Z:");
+  printDouble(z, 2);
 
 }
 
@@ -211,7 +220,7 @@ void printDouble( double val, unsigned int precision){
         frac = (val - int(val)) * precision;
     else
         frac = (int(val)- val ) * precision;
-    LCD.println(frac,DEC) ;
+    LCD.print(frac,DEC) ;
 }
 
 

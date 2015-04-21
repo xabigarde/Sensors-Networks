@@ -55,10 +55,20 @@ int minVal = 268;
 int maxVal = 407;
 
 
-// Global variables to hold the caculated values
+// Global variables to hold the caculated tilt values
 double roll; 
 double pitch;
 double yaw;
+
+// Global variables to hold the calculated acceleration values
+double x;
+double y;
+double z;
+
+// Global variables to hold the maximum absolute (+/-) accelerations for all three axes in [g]
+double maxX = 0;
+double maxY = 0;
+double maxZ = 0;
 
 double temp;
 
@@ -84,18 +94,27 @@ void setup() {
  
 void loop() {
   accel.update();  // poll the acceleromether (library function)
-  
   getAccValues();   // Poll the accelerometer
-  
   getTemperature(); // poll the thermomether
-
   getEconderValue(); // poll the encoder
+
+  printData(); // prints the current data-page to the LCD and Serial bus (USB)
 
   delay(100);//just here to slow down the serial output - Easier to read
 }
 
 void getAccValues()
 {
+  // Read the acceleration values from the accelerometer (library function)
+  x = accel.getX();
+  y = accel.getY();
+  z = accel.getZ();
+  
+  // Check if we have achieved a maximum acceleration in any axis
+  if(abs(x) > maxX) maxX = abs(x);
+  if(abs(y) > maxY) maxY = abs(y);
+  if(abs(z) > maxZ) maxZ = abs(z);
+
   //read the analog values from the accelerometer
   int xRead = analogRead(xPin);
   int yRead = analogRead(yPin);
@@ -120,8 +139,6 @@ void getAccValues()
   roll = RAD_TO_DEG * (atan2(-yAng, -zAng) + PI);
   pitch = RAD_TO_DEG * (atan2(-xAng, -zAng) + PI);
   yaw = RAD_TO_DEG * (atan2(-yAng, -xAng) + PI);
-  
-  printData();
 }
 
 
@@ -151,15 +168,10 @@ void getEconderValue(){
 void printData(){
   if( IsTime( &flashTimeMark, flashTimeInterval ) ) {  //Is it time to print the data?
     switch (dataPage) {
-      case 0:
-        printXYZ("0.-Tilt:", roll, pitch, yaw);
-        break;
-      case 1:
-        printXYZ("1.-Accel.", accel.getX(), accel.getY(), accel.getZ());
-        //Serial.print("Accel. X: ");
-        //Serial.println(accel.getX());
-        break;
-      case 2:
+      case 0: // TILT
+        printXYZ("0 Tilt", roll, pitch, 0);
+        
+        /*
         float rho;
         float phi;
         float theta;
@@ -173,6 +185,17 @@ void printData(){
         Serial.println(analogRead(yPin));
         Serial.print("X: ");
         Serial.println(roll);
+        */
+        
+        break;
+      case 1: // ACCELERATION
+        printAccel("1 Accel", x, y, z);
+        //Serial.print("Accel. X: ");
+        //Serial.println(accel.getX());
+        break;
+      case 2: // MAX ACCELERATION
+        printAccel("2 MAX", maxX, maxY, maxZ);
+
         break;
       default:
         // if nothing else matches, do the default
@@ -183,14 +206,9 @@ void printData(){
   }  
 }
 
-
-
-
-
 //////////////////////////////////////////////////
-//				Timers							//
+//		Timers		                //
 //////////////////////////////////////////////////
-
 
 //  Uses IsTime() to control the flash rahter then the delay() function.
 int IsTime(unsigned long *timeMark, unsigned long timeInterval){
