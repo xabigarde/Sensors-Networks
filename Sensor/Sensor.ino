@@ -30,16 +30,17 @@ unsigned long flashTimeMark=0;  //a millisecond time stamp used by the IsTime() 
 unsigned long int flashTimeInterval=1000;  //How many milliseconds we want for the flash cycle. 1000mS is 1 second.
 
 int dataPage = 0; // Identifier for the current data set that's going to be printed
+const int MAX_PAGE = 10;
+const int MIN_PAGE = 0;
 
-
-//Analog read pins
+//Analog read pins for the ADXL335 accelerometer
 const int xPin = 0;
 const int yPin = 1;
 const int zPin = 2;
-const int tempPin = 3;
+const float aref = 3.3;
+ADXL335 accel(xPin, yPin, zPin, aref);
 
-
-
+const int tempPin = 3; // Analog read pin for the temperature sensor
 
 // Digital Pins
 const int YELLOW_LED_1 = 13;
@@ -54,10 +55,10 @@ int minVal = 268;
 int maxVal = 407;
 
 
-//to hold the caculated values
-double x;
-double y;
-double z;
+// Global variables to hold the caculated values
+double roll; 
+double pitch;
+double yaw;
 
 double temp;
 
@@ -82,18 +83,13 @@ void setup() {
 }
  
 void loop() {
-
-  // Poll the accelerometer
-  getAccValues();
-
-  // Rotary encoder
-  enc_value += encoder->getValue();
+  accel.update();  // poll the acceleromether (library function)
   
-  if (enc_value != enc_last) {
-    enc_last = enc_value;
-    Serial.print("Encoder Value: ");
-    Serial.println(enc_value);
-  }
+  getAccValues();   // Poll the accelerometer
+  
+  getTemperature(); // poll the thermomether
+
+  getEconderValue(); // poll the encoder
 
   delay(100);//just here to slow down the serial output - Easier to read
 }
@@ -121,9 +117,9 @@ void getAccValues()
   //Caculate 360deg values like so: atan2(-yAng, -zAng)
   //atan2 outputs the value of -π to π (radians)
   //We are then converting the radians to degrees
-  x = RAD_TO_DEG * (atan2(-yAng, -zAng) + PI);
-  y = RAD_TO_DEG * (atan2(-xAng, -zAng) + PI);
-  z = RAD_TO_DEG * (atan2(-yAng, -xAng) + PI);
+  roll = RAD_TO_DEG * (atan2(-yAng, -zAng) + PI);
+  pitch = RAD_TO_DEG * (atan2(-xAng, -zAng) + PI);
+  yaw = RAD_TO_DEG * (atan2(-yAng, -xAng) + PI);
   
   printData();
 }
@@ -132,21 +128,51 @@ void getAccValues()
 void getTemperature()
 {
   int tempRead = analogRead(tempPin);
+}
 
 
+void getEconderValue(){
+  // Rotary encoder
+  enc_value += encoder->getValue();
+  
+  if(enc_value > MAX_PAGE )
+    enc_value = enc_value % MAX_PAGE;
+  else if(enc_value < MIN_PAGE )
+    enc_value = MAX_PAGE - abs(enc_value % MAX_PAGE);
+  
+  if (enc_value != enc_last) {
+    enc_last = enc_value;
+    dataPage = enc_last;
+    Serial.print("Encoder Value: ");
+    Serial.println(enc_value);
+  }
 }
 
 void printData(){
-  if(IsTime(&flashTimeMark,flashTimeInterval)) {  //Is it time to toggle the LED?
+  if( IsTime( &flashTimeMark, flashTimeInterval ) ) {  //Is it time to print the data?
     switch (dataPage) {
       case 0:
-        printXYZ("Angles", x, y, z);
+        printXYZ("0.-Tilt:", roll, pitch, yaw);
         break;
       case 1:
-        //printXYZ("Accel.", xRead, yRead, zRead);
+        printXYZ("1.-Accel.", accel.getX(), accel.getY(), accel.getZ());
+        //Serial.print("Accel. X: ");
+        //Serial.println(accel.getX());
         break;
       case 2:
-        
+        float rho;
+        float phi;
+        float theta;
+        rho = accel.getRho();
+        phi = accel.getPhi();
+        theta = accel.getTheta();
+        printXYZ("2.-Angles", rho, phi, theta);
+        Serial.print("rho");
+        Serial.println(rho);
+        Serial.print("xRead: ");
+        Serial.println(analogRead(yPin));
+        Serial.print("X: ");
+        Serial.println(roll);
         break;
       default:
         // if nothing else matches, do the default
