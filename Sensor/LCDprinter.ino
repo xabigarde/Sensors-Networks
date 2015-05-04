@@ -189,7 +189,7 @@ void printAccelerometerValues(double x, double y, double z){
   */
 }
 
-void printAccel(String what, double maxX, double maxY, double maxZ){
+void printAccel(String what, double x, double y, double z){
   clearLCD();
   selectLineOne();
   LCD.print(what+": ");
@@ -201,11 +201,6 @@ void printAccel(String what, double maxX, double maxY, double maxZ){
   LCD.print("  Z:");
   printDouble(z, 2);
 }
-
-void printMinAccel(double minX, double minY, double minZ){
-
-}
-
 
 void printTemp(String what, double currentT, double minT, double maxT){
   clearLCD();

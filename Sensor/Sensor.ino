@@ -103,10 +103,38 @@ void loop() {
   getAccValues();   // Poll the accelerometer
   getTemperature(); // poll the thermomether
   getEconderValue(); // poll the encoder
-  checkAlarms();    // check if any alarms must be triggered
   printData(); // prints the current data-page to the LCD and Serial bus (USB)
+  
+  checkAlarms();    // check if any alarms must be triggered
+  checkResetButton();
 
   delay(100);//just here to slow down the serial output - Easier to read
+}
+
+void checkResetButton()
+{
+  ClickEncoder::Button b = encoder->getButton();
+  if (b != ClickEncoder::Open) {
+    if( b == ClickEncoder::Clicked){
+      switch (dataPage) {
+        case 0: // TILT
+          break;
+        case 1: // ACCELERATION
+          break;
+        case 2: // MAX ACCELERATION
+          maxX = -10000;
+          maxY = -10000;
+          maxZ = -10000;
+          break;        
+        case 3: // Temperature
+          maxTemp = -10000;
+          minTemp = 10000;
+          break;  
+        case 4:
+          break;
+      } //switch
+    } //if
+  } //if
 }
 
 void checkAlarms()
