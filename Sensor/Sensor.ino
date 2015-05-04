@@ -24,11 +24,11 @@
 ClickEncoder *encoder;
 int16_t enc_last, enc_value;
 
-
 //Timer constants
 unsigned long flashTimeMark=0;  //a millisecond time stamp used by the IsTime() function. initialize to 0
 unsigned long int flashTimeInterval=1000;  //How many milliseconds we want for the flash cycle. 1000mS is 1 second.
 
+// LCD stuff
 int dataPage = 0; // Identifier for the current data set that's going to be printed
 const int MAX_PAGE = 10;
 const int MIN_PAGE = 0;
@@ -42,23 +42,30 @@ ADXL335 accel(xPin, yPin, zPin, aref);
 
 const int tempPin = 3; // Analog read pin for the temperature sensor
 
-// Digital Pins
+// Global variables to hold the maximum and minimum recorded temperature
+double tempRead;
+double maxTemp = -10000;
+double minTemp = 10000;
+double thermistorPad = 680;
+
+// ALARM TRIGGER LIMITS
+const double MAX_TEMPERATURE = 20;
+const double MAX_TOTAL_ACCELERATION = 2;
+
+// Digital Pins for the alarms
 const int YELLOW_LED_1 = 13;
 const int YELLOW_LED_2 = 12;
 const int RED_LED_1 = 11;
 const int RED_LED_2 = 10;
 
-//The minimum and maximum values that came from
-//the accelerometer while standing still
-//You very well may need to change these
-int minVal = 268;
-int maxVal = 407;
-
+//The minimum and maximum values that came from the accelerometer while standing still (may need to change these)
+const int minVal = 268;
+const int maxVal = 407;
 
 // Global variables to hold the caculated tilt values
 double roll; 
 double pitch;
-double yaw;
+double yaw;    // Will not ever change, because we don't have a compass
 
 // Global variables to hold the calculated acceleration values
 double x;
@@ -66,11 +73,9 @@ double y;
 double z;
 
 // Global variables to hold the maximum absolute (+/-) accelerations for all three axes in [g]
-double maxX = 0;
-double maxY = 0;
-double maxZ = 0;
-
-double temp;
+double maxX = -10000;
+double maxY = -10000;
+double maxZ = -10000;
 
 void setup() {
   Serial.begin(9600);
@@ -83,13 +88,11 @@ void setup() {
   Timer1.attachInterrupt(timerIsr); 
   
   enc_last = -1;
-  
 
   pinMode(YELLOW_LED_1, OUTPUT);
   pinMode(YELLOW_LED_2, OUTPUT);
   pinMode(RED_LED_1, OUTPUT);
   pinMode(RED_LED_2, OUTPUT);
-
 }
  
 void loop() {
@@ -101,6 +104,21 @@ void loop() {
   printData(); // prints the current data-page to the LCD and Serial bus (USB)
 
   delay(100);//just here to slow down the serial output - Easier to read
+}
+
+void checkAlarms()
+{
+  // Acceleration
+  if( (x+y+z) > MAX_TOTAL_ACCELERATION)
+    digitalWrite(YELLOW_LED_1, HIGH);
+  else
+    digitalWrite(YELLOW_LED_1, LOW);
+  
+  // Temperature
+  if(tempRead > MAX_TEMPERATURE)
+    digitalWrite(YELLOW_LED_2, HIGH);
+  else
+    digitalWrite(YELLOW_LED_2, LOW);
 }
 
 void getAccValues()
@@ -144,7 +162,12 @@ void getAccValues()
 
 void getTemperature()
 {
-  int tempRead = analogRead(tempPin);
+  //tempRead =  ( analogRead(tempPin) / 1024.0) * 500;
+  tempRead =  analogRead(tempPin);
+  if(tempRead < minTemp)
+    minTemp = tempRead;
+  if(tempRead > maxTemp)
+    maxTemp = tempRead;
 }
 
 
@@ -195,8 +218,13 @@ void printData(){
         break;
       case 2: // MAX ACCELERATION
         printAccel("2 MAX", maxX, maxY, maxZ);
+        break;        
+      case 3: // Temperature
+        printTemp("3 Temp", tempRead, minTemp, maxTemp);
+      break;  
+      case 4:
 
-        break;
+      break;
       default:
         // if nothing else matches, do the default
         // default is optional

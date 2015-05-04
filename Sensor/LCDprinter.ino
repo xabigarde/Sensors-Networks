@@ -200,11 +200,23 @@ void printAccel(String what, double maxX, double maxY, double maxZ){
   printDouble(y, 2);
   LCD.print("  Z:");
   printDouble(z, 2);
-
 }
 
 void printMinAccel(double minX, double minY, double minZ){
 
+}
+
+
+void printTemp(String what, double currentT, double minT, double maxT){
+  clearLCD();
+  selectLineOne();
+  LCD.print(what+": ");
+  printDouble(currentT, 1);
+  selectLineTwo();
+  LCD.print("Min ");
+  printDouble(minT, 1);
+  LCD.print("  Max ");
+  printDouble(maxT, 1);
 }
 
 
