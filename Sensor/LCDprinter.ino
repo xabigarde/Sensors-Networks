@@ -161,7 +161,7 @@ void backlightOff(){
 //                    CUSTOM PRINT FUNCTIONS                      //
 ////////////////////////////////////////////////////////////////////
 
-void printXYZ(String what, int x, int y, int z){
+void printTilt(String what, int x, int y, int z){
   clearLCD();
   selectLineOne();
   LCD.print(what+": ");
@@ -193,25 +193,33 @@ void printAccel(String what, double x, double y, double z){
   clearLCD();
   selectLineOne();
   LCD.print(what+": ");
-  LCD.print("X: ");
-  printDouble(x, 2);
+  LCD.print("X:");
+  printDouble(x, 10);
   selectLineTwo();
-  LCD.print("Y: ");
-  printDouble(y, 2);
-  LCD.print("  Z:");
-  printDouble(z, 2);
+  LCD.print("Y:");
+  printDouble(y, 10);
+  LCD.print(" Z:");
+  printDouble(z, 10);
 }
 
 void printTemp(String what, double currentT, double minT, double maxT){
   clearLCD();
   selectLineOne();
   LCD.print(what+": ");
+  /*
   printDouble(currentT, 1);
   selectLineTwo();
   LCD.print("Min ");
   printDouble(minT, 1);
   LCD.print(" Max ");
-  printDouble(maxT, 1);
+  printDouble(maxT, 1);*/
+  LCD.print (int(currentT));
+  LCD.print("*C");
+  selectLineTwo();
+  LCD.print(" Min ");
+  LCD.print (int(minT));
+  LCD.print(" Max ");
+  LCD.print (int(maxT));
 }
 
 

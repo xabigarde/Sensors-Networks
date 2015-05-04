@@ -6,9 +6,6 @@
 // Simple code for the ADXL335 accelerometer and thermomether. Prints calculated orientation and temperature via serial (LCD and USB)
 //////////////////////////////////////////////////////////////////
 
-// Use the softwareserial library to create a new "soft" serial port
-// for the display. This prevents display corruption when uploading code.
-//#include <SoftwareSerial.h>
 #include <math.h>         //loads the more advanced math functions
 #include <ADXL335.h>       // ADXL335 accelerometer library
 #include <avr/pgmspace.h>  // For the thermoresistor
@@ -30,17 +27,17 @@ unsigned long int flashTimeInterval=1000;  //How many milliseconds we want for t
 
 // LCD stuff
 int dataPage = 0; // Identifier for the current data set that's going to be printed
-const int MAX_PAGE = 10;
+const int MAX_PAGE = 4;
 const int MIN_PAGE = 0;
 
 //Analog read pins for the ADXL335 accelerometer
-const int xPin = 0;
-const int yPin = 1;
-const int zPin = 2;
+const int xPin = A0;
+const int yPin = A1;
+const int zPin = A2;
 const float aref = 3.3;
 ADXL335 accel(xPin, yPin, zPin, aref);
 
-const int tempPin = 3; // Analog read pin for the thermoresustir ( // 10ktherm & 10k resistor as divider )
+const int tempPin = A3; // Analog read pin for the thermoresustir ( // 10ktherm & 10k resistor as divider )
 // Global variables to hold the maximum and minimum recorded temperature
 double tempRead;
 double maxTemp = -10000;
@@ -52,8 +49,8 @@ double thermistorPad = 680;
 
 
 // ALARM TRIGGER LIMITS
-const double MAX_TEMPERATURE = 20;
-const double MAX_TOTAL_ACCELERATION = 2;
+const double MAX_TEMPERATURE = 40;
+const double MAX_TOTAL_ACCELERATION = 4.5;
 
 // Digital Pins for the alarms
 const int YELLOW_LED_1 = 13;
@@ -140,7 +137,15 @@ void checkResetButton()
 void checkAlarms()
 {
   // Acceleration
-  if( (x+y+z) > MAX_TOTAL_ACCELERATION)
+  double totalAccel = abs(x)+abs(y)+abs(z);
+  Serial.println(totalAccel);
+  Serial.print("X: ");
+   Serial.print(x);
+   Serial.print("y: ");
+   Serial.print(y);
+   Serial.print("z: ");
+   Serial.println(z);
+  if( totalAccel > MAX_TOTAL_ACCELERATION)
     digitalWrite(YELLOW_LED_1, HIGH);
   else
     digitalWrite(YELLOW_LED_1, LOW);
@@ -150,6 +155,17 @@ void checkAlarms()
     digitalWrite(YELLOW_LED_2, HIGH);
   else
     digitalWrite(YELLOW_LED_2, LOW);
+    
+  // Accelerometer plausibility check
+  if(analogRead(xPin) > 600 && analogRead(yPin) > 600 && analogRead(zPin) > 66)
+    digitalWrite(RED_LED_1, HIGH);
+  else
+    digitalWrite(RED_LED_1, LOW);
+    
+  if(analogRead(tempPin) < 400)
+      digitalWrite(RED_LED_2, HIGH);
+  else
+    digitalWrite(RED_LED_2, LOW);
 }
 
 void getAccValues()
@@ -174,13 +190,16 @@ void getAccValues()
   int yAng = map(yRead, minVal, maxVal, -90, 90);
   int zAng = map(zRead, minVal, maxVal, -90, 90);
 
-  // Used for manual calibration of min and max-values
-  //  Serial.print("xRead: ");
-  //  Serial.print(xRead);
-  //  Serial.print(" | yRead: ");
-  //  Serial.print(yRead);
-  //  Serial.print(" | zRead: ");
-  //  Serial.println(zRead);
+   // Used for manual calibration of min and max-values
+   /*
+   Serial.print("xRead: ");
+   Serial.print(xRead);
+   Serial.print(" | yRead: ");
+   Serial.print(yRead);
+   Serial.print(" | zRead: ");
+   Serial.println(zRead);
+   */
+   
 
   //Caculate 360deg values like so: atan2(-yAng, -zAng)
   //atan2 outputs the value of -π to π (radians)
@@ -204,6 +223,12 @@ void getTemperature()
     minTemp = tempRead;
   if(tempRead > maxTemp)
     maxTemp = tempRead;
+  /*
+  Serial.print("Temp pin: ");
+  Serial.println(analogRead(tempPin));
+  Serial.print("Temperature: ");
+  Serial.println(tempRead);
+  */
 }
 
 double Thermister(int RawADC) {  //Function to perform the fancy math of the Steinhart-Hart equation
@@ -236,7 +261,7 @@ void printData(){
   if( IsTime( &flashTimeMark, flashTimeInterval ) ) {  //Is it time to print the data?
     switch (dataPage) {
       case 0: // TILT
-        printXYZ("0 Tilt", roll, pitch, 0);
+        printTilt("0 Tilt", roll, pitch, yaw);
         
         /*
         float rho;
@@ -266,9 +291,6 @@ void printData(){
       case 3: // Temperature
         printTemp("3 Temp", tempRead, minTemp, maxTemp);
       break;  
-      case 4:
-
-      break;
       default:
         // if nothing else matches, do the default
         // default is optional
