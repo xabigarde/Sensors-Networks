@@ -58,6 +58,51 @@ const int YELLOW_LED_2 = 12;
 const int RED_LED_1 = 11;
 const int RED_LED_2 = 10;
 
+//PROTOCOL const
+const char START = '$';
+const char STOP = '*';
+const char CHECKSUM = '#';
+const char SEPERATOR = ';';	
+	//Thermister
+const int REQ_TEMP = 1;
+const int RESP_TEMP = 2;
+const int REQ_MAX_TEMP = 3;
+const int RESP_MAX_TEMP = 4;
+const int REQ_MIN_TEMP = 5;
+const int RESP_MIN_TEMP = 6;	
+	//Accelerometer
+const  int REQ_CURR_X = 10;
+const  int RESP_CURR_X = 11;
+const  int REQ_CURR_Y = 12;
+const  int RESP_CURR_Y = 13;
+const  int REQ_CURR_Z = 14;
+const  int RESP_CURR_Z = 15;
+const  int REQ_MAX_X = 16;
+const  int RESP_MAX_X = 17;
+const  int REQ_MAX_Y = 18;
+const  int RESP_MAX_Y = 19;
+const  int REQ_MAX_Z = 20;
+const  int RESP_MAX_Z = 21;
+const  int REQ_TILT = 22;
+const  int RESP_TILT = 23;
+const  int REQ_PITCH = 24;
+const  int RESP_PITCH = 25;
+const  int REQ_ROLL = 26;
+const  int RESP_ROLL = 27;	
+//Operational
+	
+const  int MAX_TEMP_TRESHOLD = 52;
+const  int MAX_ACC_TRESHOLD = 67;
+const  int ALARM_ACC = 42;
+
+const  int RESET_MIN_MAX = 43;
+
+
+//from java
+String content = "";
+char character;
+
+
 //The minimum and maximum values that came from the accelerometer while standing still (may need to change these)
 const int minVal = 268;
 const int maxVal = 407;
@@ -104,7 +149,21 @@ void loop() {
   
   checkAlarms();    // check if any alarms must be triggered
   checkResetButton();
+  
+  //reads from java and changes thresholds
+  /* while(Serial.available()) {
+      character = Serial.read();
+      content.concat(character);
+  }
 
+  if (content != "") {
+    Serial.println("What I get here:"+content);
+    setupNewVal(content);
+  }
+
+  */
+  sendDataToJava();
+  
   delay(100);//just here to slow down the serial output - Easier to read
 }
 
@@ -330,3 +389,49 @@ int IsTime(unsigned long *timeMark, unsigned long timeInterval){
 void timerIsr() {
   encoder->service();
 }
+
+
+/**********PRINTING PROTOCOL STUFF********************************/
+String protocolData(int _cmd, double _val){
+    String command = START + String(_cmd) + SEPERATOR + String(_val);
+    String str = command + CHECKSUM + command.length()+ STOP;
+    return(str); 
+}
+
+void sendDataToJava(){
+  // ROLL PITCH
+        Serial.println(protocolData(RESP_ROLL, roll));
+        Serial.println(protocolData(RESP_PITCH, pitch));       
+  // ACCELERATION
+        Serial.println(protocolData(RESP_CURR_X, x));
+        Serial.println(protocolData(RESP_CURR_Y, y));
+        Serial.println(protocolData(RESP_CURR_Z, z));
+    // MAX ACCELERATION
+        Serial.println(protocolData(RESP_MAX_X, maxX));
+        Serial.println(protocolData(RESP_MAX_Y, maxY));
+        Serial.println(protocolData(RESP_MAX_Z, maxZ));
+   // Temperature
+        Serial.println(protocolData(RESP_TEMP, tempRead));
+        Serial.println(protocolData(RESP_MAX_TEMP, minTemp));
+        Serial.println(protocolData(RESP_MIN_TEMP, maxTemp));
+  //ALARM THRESHOLDS
+      Serial.println(protocolData(MAX_TEMP_TRESHOLD, MAX_TEMPERATURE));
+      Serial.println(protocolData(MAX_ACC_TRESHOLD, MAX_TOTAL_ACCELERATION));
+
+    Serial.flush();
+   
+}
+void setupNewVal(String content){
+    int startIndex = content.indexOf(START);
+    int sepIndex = content.indexOf(SEPERATOR);
+    int shecksumIndex = content.indexOf(CHECKSUM);
+    
+    int cmd = content.substring(startIndex+1, sepIndex).toInt();
+    String  valStr = content.substring(sepIndex+1, shecksumIndex);
+    char buf[valStr.length()];
+    valStr.toCharArray(buf,valStr.length()+1);
+    double val=atof(buf);
+    
+    Serial.println(cmd,val);
+}
+/**********PRINTING PROTOCOL STUFF********************************/
