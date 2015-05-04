@@ -215,7 +215,7 @@ void printTemp(String what, double currentT, double minT, double maxT){
   selectLineTwo();
   LCD.print("Min ");
   printDouble(minT, 1);
-  LCD.print("  Max ");
+  LCD.print(" Max ");
   printDouble(maxT, 1);
 }
 
