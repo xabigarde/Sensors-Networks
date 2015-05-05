@@ -49,7 +49,7 @@ double thermistorPad = 680;
 
 
 // ALARM TRIGGER LIMITS
-const double MAX_TEMPERATURE = 40;
+const double MAX_TEMPERATURE = 25;
 const double MAX_TOTAL_ACCELERATION = 4.5;
 
 // Digital Pins for the alarms
@@ -197,13 +197,15 @@ void checkAlarms()
 {
   // Acceleration
   double totalAccel = abs(x)+abs(y)+abs(z);
+  /*
   Serial.println(totalAccel);
   Serial.print("X: ");
-   Serial.print(x);
-   Serial.print("y: ");
-   Serial.print(y);
-   Serial.print("z: ");
-   Serial.println(z);
+  Serial.print(x);
+  Serial.print("y: ");
+  Serial.print(y);
+  Serial.print("z: ");
+  Serial.println(z);
+  */
   if( totalAccel > MAX_TOTAL_ACCELERATION)
     digitalWrite(YELLOW_LED_1, HIGH);
   else
@@ -220,8 +222,10 @@ void checkAlarms()
     digitalWrite(RED_LED_1, HIGH);
   else
     digitalWrite(RED_LED_1, LOW);
-    
-  if(analogRead(tempPin) < 400)
+  
+  // Thermistor plausibility check
+  Serial.println(analogRead(tempPin));
+  if(analogRead(tempPin) < 150 || analogRead(tempPin) > 700)
       digitalWrite(RED_LED_2, HIGH);
   else
     digitalWrite(RED_LED_2, LOW);
@@ -229,10 +233,10 @@ void checkAlarms()
 
 void getAccValues()
 {
-  // Read the acceleration values from the accelerometer (library function)
-  x = accel.getX();
-  y = accel.getY();
-  z = accel.getZ();
+  // Read the acceleration values from the accelerometer (library function gives acceleration badly calibrated -> correct to set it to 0)
+  x = accel.getX()+1.6;
+  y = accel.getY()+1.7;
+  z = accel.getZ()+2.1;
   
   // Check if we have achieved a maximum acceleration in any axis
   if(abs(x) > maxX) maxX = abs(x);
@@ -296,7 +300,7 @@ double Thermister(int RawADC) {  //Function to perform the fancy math of the Ste
  Temp = 1 / (0.001129148 + (0.000234125 + (0.0000000876741 * Temp * Temp ))* Temp );
  Temp = Temp - 273.15;              // Convert Kelvin to Celsius
  //Temp = (Temp * 9.0)/ 5.0 + 32.0; // Celsius to Fahrenheit - comment out this line if you need Celsius
- return Temp;
+ return Temp+14;
 }
 
 void getEconderValue(){
