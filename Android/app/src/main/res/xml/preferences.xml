@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen 
+    xmlns:android="http://schemas.android.com/apk/res/android" 
+    xmlns:arduino2android="http://arduino2android.org">
+    
+    <!-- Global preferences / settings menu -->
+
+    <!-- Test plan settings (discovery plan, connection timing and connection mode) -->
+    <PreferenceCategory 
+        android:key="pref_key_plan_settings"
+        android:title="@string/pref_plan_title"
+        android:summary="Changes will take place on the next test">
+        <ListPreference 
+            android:key="pref_discoveryPlan"
+            android:title="@string/pref_discoveryPlan"
+            android:dialogTitle="@string/pref_discoveryPlan"
+            android:entries="@array/pref_discoveryPlan_entries"
+            android:entryValues="@array/pref_discoveryPlan_values"
+            android:defaultValue="@string/pref_discoveryPlan_default"/>
+        <ListPreference 
+            android:key="pref_connectionTiming"
+            android:title="@string/pref_connectionTiming"
+            android:dialogTitle="@string/pref_connectionTiming"
+            android:entries="@array/pref_connectionTiming_entries"
+            android:entryValues="@array/pref_connectionTiming_values"
+            android:defaultValue="@string/pref_connectionTiming_default"/>
+        <ListPreference 
+            android:key="pref_connectionMode"
+            android:title="@string/pref_connectionMode"
+            android:dialogTitle="@string/pref_connectionMode"
+            android:entries="@array/pref_connectionMode_entries"
+            android:entryValues="@array/pref_connectionMode_values"
+            android:defaultValue="@string/pref_connectionMode_default"/>
+     </PreferenceCategory>
+    
+    <!-- General perfomance settings -->
+    <PreferenceCategory 
+        android:key="pref_performance_settings"
+        android:title="@string/pref_performance_settings">
+		<SwitchPreference
+	        android:key="pref_performanceMode"
+	        android:title="@string/pref_performanceMode"
+	        android:summaryOn="@string/pref_performanceMode_summary_ON"
+	        android:summaryOff="@string/pref_performanceMode_summary_OFF"
+	        android:defaultValue="off"
+	        android:disableDependentsState="true"/>
+	    
+	    <SwitchPreference 
+	        android:key="pref_autoRefreshTargetList"
+	        android:title="@string/pref_autoRefreshTargetList"
+	        android:summaryOn="@string/pref_autoRefreshTargetList_summary_ON"
+	        android:summaryOff="@string/pref_autoRefreshTargetList_summary_OFF"
+	        android:defaultValue="on"
+	        android:dependency="pref_performanceMode"/>
+	    
+ 	    <org.egokituz.arduino2android.preferences.SeekBarPreference
+	        android:key="pref_discoveryInterval"
+        	android:title="@string/pref_discoveryInterval" 
+        	android:summary="Adjust discovery frequency"
+            android:defaultValue="60"
+            android:max="360"
+            arduino2android:min="1"
+            arduino2android:unitsLeft=""
+            arduino2android:unitsRight="secs."/>
+	</PreferenceCategory>
+	
+    <PreferenceCategory 
+        android:key="pref_chart_settings"
+        android:title="@string/pref_chart_settings">
+        
+        <org.egokituz.arduino2android.preferences.NumberPickerPreference
+            android:key="pref_chart_x_values"
+            android:title="@string/pref_chart_x_values"/>
+            
+        
+        
+    </PreferenceCategory>
+
+</PreferenceScreen>

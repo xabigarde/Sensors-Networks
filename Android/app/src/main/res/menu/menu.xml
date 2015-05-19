@@ -1,0 +1,23 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="org.egokituz.arduino2android.gui.MainActivity" >
+
+    <!-- Action bar menu options -->
+
+    <item
+        android:id="@+id/help"
+        android:icon="@android:drawable/ic_menu_help"
+        android:title="@string/help"
+        android:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/preferences"
+        android:title="@string/title_activity_preferences"
+        android:icon="@android:drawable/ic_menu_preferences"/>
+    
+    <item 
+        android:id="@+id/openLogFolder"
+        android:icon="@android:drawable/ic_menu_save"
+        android:title="@string/openLogFolder"  />
+    
+	
+</menu>
