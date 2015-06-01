@@ -7,6 +7,8 @@ import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,13 +18,18 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import org.egokituz.arduino2android.R;
 import org.egokituz.arduino2android.TestApplication;
 import org.egokituz.arduino2android.activities.MainActivity;
+import org.egokituz.arduino2android.activities.SettingsActivity;
+import org.egokituz.arduino2android.models.TestData;
+import org.egokituz.arduino2android.preferences.ContextData;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 
 /**
  * Main {@link Fragment} of the {@link MainActivity}. It contains the control buttons for a new test.
@@ -35,6 +42,9 @@ public class TestSectionFragment extends Fragment{
 	private static final String TAG = "TestSectionFragment";
 
 	public static final int REQUEST_ENABLE_BT_RESULT = 1;
+
+    TextView m_lngView, m_latView, m_speedView, m_activityView, m_tcView, m_lightView;
+	Handler mainAppHandler;
 
 	Spinner spinnerBluetooth;
 	ListView devicesListView;
@@ -121,7 +131,14 @@ public class TestSectionFragment extends Fragment{
 		});
 
 		// views
-		
+		m_speedView = (TextView) rootView.findViewById(R.id.speed);
+		m_latView = (TextView) rootView.findViewById(R.id.lat);
+		m_lngView = (TextView) rootView.findViewById(R.id.lng);
+		m_lightView = (TextView) rootView.findViewById(R.id.light);
+		m_tcView = (TextView) rootView.findViewById(R.id.tc);
+		m_activityView = (TextView) rootView.findViewById(R.id.activity);
+
+
 		// Action of the "Refresh list" button onClick event
 		rootView.findViewById(R.id.buttonRefresh).setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -130,9 +147,49 @@ public class TestSectionFragment extends Fragment{
 			}
 		});
 
+		//handler
+		createHandler();
+
 		return rootView;
 	}
 
+	public void createHandler(){
+	    mainAppHandler = new Handler() {
+
+			@SuppressWarnings("unchecked")
+			@Override
+			public void handleMessage(Message msg) {
+				ContextData data = (ContextData) msg.obj;
+				m_speedView.setText(data.getSpeed()+"");
+				m_latView.setText(data.getLatitude());
+				m_lngView.setText(data.getLongitude());
+			    m_activityView.setText(data.getActivity());
+				m_tcView.setText(data.getTc()+"");
+				if (data.isBackpack_open()) {
+					m_lightView.setText("opened");
+				} else {
+					m_lightView.setText("closed");
+
+				}
+
+				/*switch (msg.what) {
+					case TestData.DATA_PING:
+
+						break;
+					case TestData.DATA_STRESS:
+
+						break;
+					case TestData.DATA_BATTERY:
+
+						break;
+					case TestData.DATA_CPU:
+
+						break;
+
+				}*/
+			}
+		};
+	}
 	private void requestBluetoothEnable() {
 		BluetoothAdapter _BluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
