@@ -22,8 +22,8 @@ final public class Constants { //final to prevent instantiation
 	public static final String IMMEDIATE_STOP_DISCOVERY_CONNECT = "IMMEDIATE_STOP_DISCOVERY_CONNECT";
 	public static final String IMMEDIATE_WHILE_DISCOVERING_CONNECT = "IMMEDIATE_WHILE_DISCOVERING_CONNECT";
 	public static final String DELAYED_CONNECT = "DELAYED_CONNECT";
-	
-		
+
+
 	//private constructor to prevent instantiation/inheritance
 	private Constants(){
 		
