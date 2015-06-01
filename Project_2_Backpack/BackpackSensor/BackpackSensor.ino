@@ -11,6 +11,8 @@ const int LEDred = 11;
 const int LEDyellow = 12;
 const int LEDonboard = 13;
 
+String context;
+
 enum Color { RED, GREEN, BLUE };
 
 
@@ -23,6 +25,8 @@ void setup() {
   
   
   Serial.begin(9600);      // sets the serial port to 9600
+  
+  setup_BluetoothBridge(); // Call the setup() method of the BluetoothBridge sketch
 }
 
 void loop() {
@@ -32,7 +36,10 @@ void loop() {
 
   // Detect bag Open or closed
   checkOpenClose();
-
+  
+  context = "New context: blablablabla";
+  loop_BluetoothBridge(); // Call the loop() method of the BluetoothBridge sketch
+  //  execution blocked until loop_BluetoothBridge() ends
 }
 
 
