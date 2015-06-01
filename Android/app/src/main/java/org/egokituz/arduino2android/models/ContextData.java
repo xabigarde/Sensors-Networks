@@ -1,9 +1,12 @@
-package org.egokituz.arduino2android.preferences;
+package org.egokituz.arduino2android.models;
 
 /**
  * Created by Elena on 01/06/2015.
  */
 public class ContextData {
+
+    public static final int CONTEXT_DATA = 69841326;
+
     final static String WALKING = "Walking";
     final static String STANDING = "Standing";
 
@@ -14,6 +17,17 @@ public class ContextData {
     private boolean backpack_open = false;
     private String activity = "not detected";
     private double tc =0.0;
+
+    /**
+     * Constructor from string containing data values.
+     * String format: [speed backpackState activity temperature]
+     * The data values are separated by a blank space.
+     * All values must be available
+     * @param str
+     */
+    public ContextData(String str){
+        //TODO parse string to get values
+    }
 
     public void setTc(double tc) {
         this.tc = tc;
