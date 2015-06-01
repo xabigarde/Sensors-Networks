@@ -30,6 +30,7 @@ import android.os.SystemClock;
 import android.util.Log;
 
 import org.egokituz.arduino2android.models.ArduinoMessage;
+import org.egokituz.arduino2android.models.ContextData;
 import org.egokituz.arduino2android.models.PingData;
 import org.egokituz.arduino2android.models.StressData;
 import org.egokituz.arduino2android.models.TestData;
@@ -433,6 +434,19 @@ public class ArduinoThread extends Thread{
 			
 			break;
 		case ArduinoMessage.MSGID_DATA:
+            Log.v(TAG, "In message from Arduino: "+ readMessage.getPayload());
+            ContextData context = new ContextData(readMessage.getPayload());
+
+            m_mainAppHandler.obtainMessage(TestApplication.MESSAGE_DATA_READ, context).sendToTarget();
+
+            /*
+            dataQueue.add((StressData) data);
+            if(dataQueue.size()>MESSAGE_BUCKET_SIZE){
+                m_mainAppHandler.obtainMessage(TestApplication.MESSAGE_DATA_READ, dataQueue.clone()).sendToTarget();
+                dataQueue.clear();
+            }
+            */
+            /*
 			data = new StressData(readMessage.timestamp, readMessage.size(), m_devName);
 			
 			dataQueue.add((StressData) data);
@@ -440,6 +454,7 @@ public class ArduinoThread extends Thread{
 				m_mainAppHandler.obtainMessage(TestApplication.MESSAGE_DATA_READ, dataQueue.clone()).sendToTarget();
 				dataQueue.clear();
 			}
+			*/
 			break;
 		}
 		

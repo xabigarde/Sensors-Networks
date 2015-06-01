@@ -38,7 +38,7 @@ int frameNum = 0;
 
 float latitude, longitude, velocity, distance;
 
-void setup() {
+void setup_BluetoothBridge() {
   //Setup Timer2 to fire every 1ms
   TCCR2B = 0x00;        //Disbale Timer2 while we set it up
   TCNT2  = 130;         //Reset Timer Count to 130 out of 255
@@ -47,7 +47,7 @@ void setup() {
   TCCR2A = 0x00;        //Timer2 Control Reg A: Wave Gen Mode normal
   TCCR2B = 0x05;        //Timer2 Control Reg B: Timer Prescaler set to 128
   
-  Serial.begin(57600); // set baud-rate for the default serial port
+  //Serial.begin(57600); // set baud-rate for the default serial port
   btSerial.begin(57600); // set baud-rate for the bluetooth serial port
 
   pinMode(btPower, OUTPUT); // initialize the digital pin as an output.
@@ -56,7 +56,7 @@ void setup() {
   started = true;
 }
 
-void loop() {
+void loop_BluetoothBridge() {
 
   // Echo all incoming Bluetooth data (for PING tests)
   while(btSerial.available()) {
@@ -108,7 +108,7 @@ void loop() {
     }//if STX
   }//end while(btSerial.available())
   
-  payload = "Backpack_open running etc.";
+  payload = context;
   sendMessageIfPossible();
   
   delay(50);

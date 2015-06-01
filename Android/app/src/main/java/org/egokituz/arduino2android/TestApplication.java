@@ -14,6 +14,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import org.egokituz.arduino2android.activities.SettingsActivity;
+import org.egokituz.arduino2android.models.ContextData;
 import org.egokituz.arduino2android.models.TestData;
 import org.egokituz.arduino2android.models.TestError;
 import org.egokituz.arduino2android.models.TestEvent;
@@ -208,8 +209,10 @@ public class TestApplication extends Application {
                         // Message received from a running Arduino Thread
                         // This message implies that 99 well formed DATA messages were read by an Arduino Thread
 
-                        ArrayList<TestData> dataQueue = (ArrayList<TestData>) msg.obj;
-                        communicateToDataListeners(TestData.DATA_STRESS, dataQueue);
+                        //ArrayList<TestData> dataQueue = (ArrayList<TestData>) msg.obj;
+                        //communicateToDataListeners(TestData.DATA_STRESS, dataQueue);
+                        ContextData context = (ContextData) msg.obj;
+                        communicateToDataListeners(ContextData.CONTEXT_DATA, context);
 
                         //m_Logger_thread.m_logHandler.obtainMessage(LoggerThread.MESSAGE_WRITE_DATA, dataQueue).sendToTarget();
                         break;
