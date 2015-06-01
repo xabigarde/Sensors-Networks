@@ -115,11 +115,7 @@ void prepareData()
     Serial.println("Prepare Data");
 #endif
 
-    //   Context format: [activity  backpack(open/closed)  Temperature(float)  locality]
-    context = "walking open 20.0 Hagenberg";
-
     //context = activity+" "+backpackState+" "+temperature+" "+locality;
-
 
     // Prepare data to send
     context = accStatus + " " + backpackState + " " + temperature + " " + locality;
