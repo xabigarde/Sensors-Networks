@@ -4,15 +4,19 @@
 __asm volatile ("nop");
 #endif
 
+// Ucomment to see excessive debug output on console
 //#define DEBUG
 
+
+/* ==============================================
+Temperature
+============================================== */
 const int tempPin = A3;
-const int lightPin = A4;
+float temperature;
 
 /* ==============================================
 LEDs
 ============================================== */
-
 const int LEDred = 11;
 const int LEDyellow = 12;
 const int LEDonboard = 13;
@@ -20,10 +24,11 @@ const int LEDonboard = 13;
 /* ==============================================
 OPenClosed
 ============================================== */
+const int lightPin = A4;
 const int LEDgreen = 10;
-bool isOpen;
 const String strBagOpen = "open";
 const String strBagClosed = "closed";
+String backpackState = "";
 
 /* ==============================================
 Communication
@@ -33,6 +38,8 @@ unsigned long dataLastUpdate = 0;
 const int dataSendInterval = 1000;
 
 float latitude, longitude, velocity, distance; //incoming data from GPS sensor
+String locality;
+/* ==============================================
 Accelerometer setup
 ============================================== */
 const int xPin = A0;
@@ -67,7 +74,6 @@ void setup() {
   pinMode(LEDred, OUTPUT);
   pinMode(LEDonboard, OUTPUT);
 
-
   Serial.begin(9600);      // sets the serial port to 9600
 
   setup_BluetoothBridge(); // Call the setup() method of the BluetoothBridge sketch
@@ -84,26 +90,22 @@ void loop() {
 
   // Detect bag Open or closed
   checkOpenClose();
-  
-  //   Context format: [activity  backpack(open/closed)  Temperature(float)  locality]
-  context = "walking open 20.0 Hagenberg";
-  
-  //context = activity+" "+backpackState+" "+temperature+" "+locality;
-  
-  isOpen = checkOpenClose();
 
+  //Get current temperature
+  getTemperature();
+
+  // Prepare data for sending (when time)
   prepareData();
 
+  // Get gps-data and send data
   loop_BluetoothBridge(); // Call the loop() method of the BluetoothBridge sketch
   //  execution blocked until loop_BluetoothBridge() ends
 
+  // Clear context to avoid sending data again
   context = "";
-
-
-
 }
 
-
+// Prepares data to be sent to the client
 void prepareData()
 {
   if (millis() - dataLastUpdate >= dataSendInterval)
@@ -113,8 +115,17 @@ void prepareData()
     Serial.println("Prepare Data");
 #endif
 
+    //   Context format: [activity  backpack(open/closed)  Temperature(float)  locality]
+    context = "walking open 20.0 Hagenberg";
+
+    //context = activity+" "+backpackState+" "+temperature+" "+locality;
+
+
     // Prepare data to send
-    context = "blah";
+    context = accStatus + " " + backpackState + " " + temperature + " " + locality;
+
+    Serial.print("Data sent: ");
+    Serial.println(context);
 
     // Update data send time
     dataLastUpdate = millis();
@@ -132,17 +143,17 @@ bool checkOpenClose() {
 
   int lightRead = analogRead(lightPin);
 
-
-
   if (lightRead < 1000)
   {
     // Bag is open
     digitalWrite(LEDgreen, HIGH);
+    backpackState = strBagOpen;
     return true;
   }
   else
   {
     digitalWrite(LEDgreen, LOW);
+    backpackState = strBagClosed;
     return false;
   }
 
@@ -229,4 +240,21 @@ String processAcc()
   }
 
   return accStatus;
+}
+
+float getTemperature()
+{
+
+  temperature = Thermister(analogRead(tempPin));
+  Serial.println(temperature);
+  return temperature;
+}
+
+float Thermister(int RawADC) {  //Function to perform the fancy math of the Steinhart-Hart equation
+  float Temp;
+  Temp = log(((10240000 / RawADC) - 10000));
+  Temp = 1 / (0.001129148 + (0.000234125 + (0.0000000876741 * Temp * Temp )) * Temp );
+  Temp = Temp - 273.15;              // Convert Kelvin to Celsius
+  //Temp = (Temp * 9.0)/ 5.0 + 32.0; // Celsius to Fahrenheit - comment out this line if you need Celsius
+  return Temp + 14;
 }
