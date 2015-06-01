@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.speech.tts.TextToSpeech;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,6 +21,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import org.egokituz.arduino2android.R;
+import org.egokituz.arduino2android.Speaker;
 import org.egokituz.arduino2android.TestApplication;
 import org.egokituz.arduino2android.activities.MainActivity;
 import org.egokituz.arduino2android.models.ContextData;
@@ -35,6 +37,12 @@ public class TestSectionFragment extends Fragment{
     private static final String TAG = "TestSectionFragment";
 
     public static final int REQUEST_ENABLE_BT_RESULT = 1;
+
+    // Speaker stuff...
+    private final int CHECK_CODE = 0x1;
+    private final int LONG_DURATION = 5000;
+    private final int SHORT_DURATION = 1200;
+    private Speaker speaker;
 
     TextView m_lngView, m_latView, m_speedView, m_activityView, m_tcView, m_lightView;
 
@@ -84,6 +92,8 @@ public class TestSectionFragment extends Fragment{
         setRetainInstance(true);
 
         m_mainApp.registerTestDataListener(mainFragmentHandler);
+        //checkTTS();
+        speaker = new Speaker(m_mainContext);
     }
 
     @Override
@@ -154,9 +164,9 @@ public class TestSectionFragment extends Fragment{
                     } else {
                         m_lightView.setText("closed");
                     }
+                    speaker.speak("Hello, this is a test message.");
                     break;
-            }
-
+            }//switch
         }
     };
 
@@ -199,6 +209,14 @@ public class TestSectionFragment extends Fragment{
                     //this.spinnerBluetooth.setClickable(false);
                     break;
             }
+        } else if(requestCode == CHECK_CODE){
+            if(resultCode == TextToSpeech.Engine.CHECK_VOICE_DATA_PASS){
+                speaker = new Speaker(m_mainContext);
+            }else {
+                Intent install = new Intent();
+                install.setAction(TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
+                startActivity(install);
+            }
         }
 
     }
@@ -214,5 +232,17 @@ public class TestSectionFragment extends Fragment{
             result = m_mainApp.getBTManager().getConnectedArduinos();
         return result;
 
+    }
+
+    private void checkTTS(){
+        Intent check = new Intent();
+        check.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
+        startActivityForResult(check, CHECK_CODE);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        speaker.destroy();
     }
 }
