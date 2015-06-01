@@ -35,7 +35,7 @@ const int ETX = 0x03; // ETX byte
 String payload = ""; 
 int frameNum = 0;
 
-float latitude, longitude;
+float latitude, longitude, velocity, distance;
 
 void setup() {
   //Setup Timer2 to fire every 1ms
@@ -78,11 +78,15 @@ void loop() {
       // String s = String(in_payload); // char[] to String
       
       // get latitude and longitude from the payload message:
-      char *coordinates[2]; // auxiliar variable for strtok() (string tokenizer)
-      coordinates[0] = strtok(in_payload, " "); // first half = latitude
-      coordinates[1] = strtok(NULL, " "); // segond half = longitude
+      char *coordinates[4]; // auxiliar variable for strtok() (string tokenizer)
+      coordinates[0] = strtok(in_payload, " "); // first part = latitude
+      coordinates[1] = strtok(NULL, " "); // segond part = longitude
+      coordinates[2] = strtok(NULL, " "); // third part = velocity
+      coordinates[3] = strtok(NULL, " "); // fourth part = distance
       latitude = String(coordinates[0]).toFloat(); // get latitude
       longitude = String(coordinates[1]).toFloat(); // get longitude
+      velocity = String(coordinates[2]).toFloat(); // get velocity
+      distance = String(coordinates[3]).toFloat(); // get distance
 
       in_crc[0] = btSerial.read();  //read CRC bytes (4 bytes)
       in_crc[1] = btSerial.read();
@@ -93,7 +97,9 @@ void loop() {
       if(in_byte!=ETX) {
         Serial.println("Error reading the message!");
       } else {
-        Serial.print("Coordinates: lat. ");Serial.print(latitude,8);Serial.print(" long. ");Serial.println(longitude,8);
+        Serial.print("Coordinates: lat. ");Serial.print(latitude,7);Serial.print(" long. ");
+        Serial.print(longitude,7);Serial.print(" || Vel.: ");Serial.print(velocity,8);Serial.print(" distance: ");Serial.print(distance,2);
+        Serial.println("");
         // TODO: send asyncronous call or message to main thread with the new coordinates
       }
     }//if STX

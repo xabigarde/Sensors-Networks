@@ -26,6 +26,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -60,7 +61,7 @@ public class BTManagerThread extends Thread{
     public static final int MESSAGE_SEND_COMMAND = 3;
     public static final int MESSAGE_CONNECTION_LOST = 4;
     public static final int MESSAGE_SET_SCENARIO = 5;
-    public static final int MESSAGE_SEND_GPS = 6;
+    public static final int MESSAGE_SEND_GPS_LOCATION = 6;
 
 	/*
 	public static final int STABLE_SCENARIO = 1;
@@ -307,17 +308,18 @@ public class BTManagerThread extends Thread{
                         discoveryInterval = aux;
                     break;
 
-                case MESSAGE_SEND_GPS:
+                case MESSAGE_SEND_GPS_LOCATION:
                     // Message received from the Main Activiy
                     // This message implies a request to write to the socket of a running Arduino
                     mBundle = msg.getData();
                     //String coordinates = mBundle.getString("GPS");
                     //devMAC =  mBundle.getString("MAC");
-                    String coordinates = (String) msg.obj;
-
+                    //String coordinates = (String) msg.obj;
+                    Location location = (Location) msg.obj;
+                    int distance = msg.arg1;
                     //sendCommandToArduino(devMAC, coordinates);
                     //Log.v(TAG, "BT-mngr: GPS coordinates received: "+coordinates);
-                    sendGPSToAll(coordinates);
+                    sendGPSToAll(location, distance);
 
                     break;
             }
@@ -634,11 +636,13 @@ public class BTManagerThread extends Thread{
         }
     }
 
-    private void sendGPSToAll(String coordinates){
+    private void sendGPSToAll(Location location, int distance){
 
         synchronized (myArduinoThreads) {
+            String locationString = location.getLatitude() + " " + location.getLongitude()+" "+location.getSpeed()+" "+distance;
             for (ArduinoThread th : myArduinoThreads.values()) {
-                sendDataToArduino(th.getDeviceMAC(), "COORDINATES", coordinates);
+                //sendDataToArduino(th.getDeviceMAC(), "COORDINATES", coordinates);
+                sendDataToArduino(th.getDeviceMAC(), "COORDINATES", locationString);
             }
         }
     }

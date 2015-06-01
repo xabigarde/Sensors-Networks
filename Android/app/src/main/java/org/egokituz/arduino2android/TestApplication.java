@@ -6,6 +6,7 @@ package org.egokituz.arduino2android;
 import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.Context;
+import android.location.Location;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
@@ -43,7 +44,7 @@ public class TestApplication extends Application {
     public static final int MESSAGE_ERROR_READING = 7;
     public static final int MESSAGE_BT_EVENT = 8;
     public static final int MESSAGE_PREFERENCE_CHANGED = 9;
-    public static final int MESSAGE_GPS = 10;
+    public static final int MESSAGE_GPS_LOCATION = 10;
 
 
 
@@ -240,13 +241,15 @@ public class TestApplication extends Application {
                         toast.show();
                         break;
 
-                    case MESSAGE_GPS:
-                        String coordinates = (String) msg.obj;
+                    case MESSAGE_GPS_LOCATION:
+                        Location location = (Location) msg.obj;
+                        //String coordinates = (String) msg.obj;
                         //Log.v(TAG, "MainApp: coordinates received:"+coordinates);
                         if(m_BTManager_thread != null) {
                             Message sendMsg;
-                            sendMsg = m_BTManager_thread.btHandler.obtainMessage(BTManagerThread.MESSAGE_SEND_GPS);
-                            sendMsg.obj = coordinates;
+                            sendMsg = m_BTManager_thread.btHandler.obtainMessage(BTManagerThread.MESSAGE_SEND_GPS_LOCATION);
+                            sendMsg.obj = location;
+                            sendMsg.arg1 = msg.arg1; // distance
                             sendMsg.sendToTarget();
                         }
                         break;
