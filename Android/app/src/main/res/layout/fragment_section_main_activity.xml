@@ -23,7 +23,7 @@
     <GridLayout
         android:layout_width="match_parent"
         android:background="@drawable/bg_layout"
-        android:layout_margin="20dp"
+        android:layout_margin="10dp"
         android:padding="10dp"
         android:layout_height="72dp"
         android:layout_weight="0.14">
@@ -34,7 +34,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Speed"
+            android:text="Speed:"
             android:id="@+id/speedlbl"
             android:layout_row="1"
             android:layout_column="0" />
@@ -92,9 +92,9 @@
     <GridLayout
         android:layout_width="match_parent"
         android:background="@drawable/bg_layout"
-        android:layout_margin="20dp"
+        android:layout_margin="10dp"
         android:padding="10dp"
-        android:layout_height="80dp">
+        android:layout_height="wrap_content">
 
 
 
@@ -105,8 +105,7 @@
         android:id="@+id/openLbl"
         android:text="Backpack is :"
         android:layout_row="0"
-        android:layout_column="0"
-            android:layout_marginTop="20dp" />
+        android:layout_column="0" />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -127,10 +126,9 @@
     <GridLayout
         android:layout_width="match_parent"
         android:background="@drawable/bg_layout"
-        android:layout_margin="20dp"
+        android:layout_margin="10dp"
         android:padding="10dp"
-        android:layout_height="80dp"
-        android:layout_weight="0.23">
+        android:layout_height="wrap_content">
 
 
 
@@ -141,8 +139,7 @@
             android:id="@+id/activityLbl"
             android:text="Currently is :"
             android:layout_row="0"
-            android:layout_column="0"
-            android:layout_marginTop="20dp" />
+            android:layout_column="0" />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -164,10 +161,9 @@
     <GridLayout
         android:layout_width="match_parent"
         android:background="@drawable/bg_layout"
-        android:layout_margin="20dp"
+        android:layout_margin="10dp"
         android:padding="10dp"
-        android:layout_height="80dp"
-        android:layout_weight="0.21">
+        android:layout_height="wrap_content">
 
 
 
@@ -179,7 +175,7 @@
             android:text="Current Temperature :"
             android:layout_row="0"
             android:layout_column="0"
-            android:layout_marginTop="20dp" />
+            android:layout_marginTop="0dp" />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
