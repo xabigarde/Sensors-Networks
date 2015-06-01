@@ -27,6 +27,11 @@ public class ContextData {
      */
     public ContextData(String str){
         //TODO parse string to get values
+
+        //TODO remove this hardcoded data:
+        backpack_open = true;
+        activity = "Running0";
+        tc = 20.0;
     }
 
     public void setTc(double tc) {
