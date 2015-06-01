@@ -79,6 +79,7 @@ public class ContextThread extends Thread {
 
         speaker = new Speaker(m_AppContext);
 
+        //TODO remove hardcoded initial context
         oldContext = new ContextData("standstill closed 10.0 Linz");
     }
 

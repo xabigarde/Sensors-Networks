@@ -16,8 +16,8 @@
     <string name="immediateWhile">Immediate (while discovering)</string>
     <string name="delayed">Delayed</string>
     <string name="refreshButton">Refresh list</string>
-    <string name="beginTestButton">Begin Test</string>
-    <string name="stopTestButton">Stop Test</string>
+    <string name="beginTestButton">Connect backpack</string>
+    <string name="stopTestButton">Reset backpack</string>
     <string name="title_activity_preferences">Settings</string>
     <string name="help">Help</string>
     <string name="openLogFolder">Open log folder</string>

@@ -63,7 +63,7 @@ public class CustomPagerAdapter extends FragmentPagerAdapter{
     public CharSequence getPageTitle(int position) {
     	switch (position) {
 		case 0:
-			return "Test manager";
+			return "Backpack manager";
 		default:
 			return "Section " + (position + 1);
 		}
