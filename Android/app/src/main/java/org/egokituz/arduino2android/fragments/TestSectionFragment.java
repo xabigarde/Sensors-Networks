@@ -153,22 +153,30 @@ public class TestSectionFragment extends Fragment{
 
             switch (msg.what){
                 case ContextData.CONTEXT_DATA:
-                    ContextData data = (ContextData) msg.obj;
-                    m_speedView.setText(data.getSpeed()+"");
-                    m_latView.setText(data.getLatitude());
-                    m_lngView.setText(data.getLongitude());
-                    m_activityView.setText(data.getActivity());
-                    m_tcView.setText(data.getTc()+"");
-                    if (data.isBackpack_open()) {
-                        m_lightView.setText("opened");
-                    } else {
-                        m_lightView.setText("closed");
-                    }
+                    updateContext((ContextData) msg.obj); //update the GUI
+
                     speaker.speak("Hello, this is a test message.");
                     break;
             }//switch
         }
     };
+
+    /**
+     * Updates the GUI with the provided context data
+     * @param data
+     */
+    private void updateContext(ContextData data){
+        m_speedView.setText(data.getSpeed()+"");
+        m_latView.setText(data.getLatitude());
+        m_lngView.setText(data.getLongitude());
+        m_activityView.setText(data.getActivity());
+        m_tcView.setText(data.getTc()+"");
+        if (data.isBackpack_open()) {
+            m_lightView.setText("opened");
+        } else {
+            m_lightView.setText("closed");
+        }
+    }
 
     private void requestBluetoothEnable() {
         BluetoothAdapter _BluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
