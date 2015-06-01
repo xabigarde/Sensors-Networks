@@ -433,6 +433,17 @@ public class ArduinoThread extends Thread{
 			
 			break;
 		case ArduinoMessage.MSGID_DATA:
+            Log.v(TAG, "In message from Arduino: "+ readMessage.getPayload());
+            data = new StressData(readMessage.timestamp, readMessage.size(), m_devName);
+
+            m_mainAppHandler.obtainMessage(TestApplication.MESSAGE_DATA_READ, data).sendToTarget();
+
+            dataQueue.add((StressData) data);
+            if(dataQueue.size()>MESSAGE_BUCKET_SIZE){
+                m_mainAppHandler.obtainMessage(TestApplication.MESSAGE_DATA_READ, dataQueue.clone()).sendToTarget();
+                dataQueue.clear();
+            }
+            /*
 			data = new StressData(readMessage.timestamp, readMessage.size(), m_devName);
 			
 			dataQueue.add((StressData) data);
@@ -440,6 +451,7 @@ public class ArduinoThread extends Thread{
 				m_mainAppHandler.obtainMessage(TestApplication.MESSAGE_DATA_READ, dataQueue.clone()).sendToTarget();
 				dataQueue.clear();
 			}
+			*/
 			break;
 		}
 		
