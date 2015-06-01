@@ -20,11 +20,12 @@ byte in_dlc[4]; // DLC bytes (size of the payload)
 int in_payloadSize; // Numbere of bytes in the payload
 byte in_crc[4]; // CRC bytes
 
-int btPower = 8; // Power switch pin address for the Bluetooth antenna
+const int btPower = 8; // Power switch pin address for the Bluetooth antenna
 boolean started = false; // control flag
 boolean flag_seconds = false; // control flag
 int seconds = 0;
 int ticks = 0;
+const int CONTEXT_SEND_FREQENCY = 999; // miliseconds
 
 // Variables for writing messages to the Bluetooth serial
 const int STX = 0x02; // STX byte
@@ -51,6 +52,8 @@ void setup() {
 
   pinMode(btPower, OUTPUT); // initialize the digital pin as an output.
   digitalWrite(btPower, HIGH); // Power ON the Bluetooth antenna
+  
+  started = true;
 }
 
 void loop() {
@@ -104,6 +107,10 @@ void loop() {
       }
     }//if STX
   }//end while(btSerial.available())
+  
+  payload = "Backpack_open running etc.";
+  sendMessageIfPossible();
+  
   delay(50);
 }//end loop()
 
@@ -173,7 +180,7 @@ boolean check_clock() {
 //Timer2 Overflow Interrupt Vector, called every 1ms
 ISR(TIMER2_OVF_vect) {
   ticks++;               //Increments the interrupt counter
-  if(ticks > 99){
+  if(ticks > CONTEXT_SEND_FREQENCY){
     ticks = 0;           //Resets the interrupt counter
     flag_seconds = true;
     seconds++;

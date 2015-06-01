@@ -33,6 +33,8 @@ public class GPSModule extends Thread implements LocationListener {
         m_mainHandler = mainHandler;
         LocationManager locationManager = (LocationManager) m_mainContext.getSystemService(Context.LOCATION_SERVICE);
 
+        //TODO Turn location on if it is turned off
+
         // Register the listener with the Location Manager to receive location updates
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, this);
     }
