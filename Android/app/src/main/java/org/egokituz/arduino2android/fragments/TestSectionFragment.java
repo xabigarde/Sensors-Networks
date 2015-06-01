@@ -14,7 +14,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Spinner;
@@ -24,9 +23,6 @@ import org.egokituz.arduino2android.R;
 import org.egokituz.arduino2android.TestApplication;
 import org.egokituz.arduino2android.activities.MainActivity;
 import org.egokituz.arduino2android.models.ContextData;
-
-import java.util.ArrayList;
-import java.util.Collections;
 
 /**
  * Main {@link Fragment} of the {@link MainActivity}. It contains the control buttons for a new test.
@@ -137,14 +133,6 @@ public class TestSectionFragment extends Fragment{
         m_activityView = (TextView) rootView.findViewById(R.id.activity);
 
 
-        // Action of the "Refresh list" button onClick event
-        rootView.findViewById(R.id.buttonRefresh).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                updateSpinner();
-            }
-        });
-
         return rootView;
     }
 
@@ -152,17 +140,23 @@ public class TestSectionFragment extends Fragment{
         @SuppressWarnings("unchecked")
         @Override
         public void handleMessage(Message msg) {
-            ContextData data = (ContextData) msg.obj;
-            m_speedView.setText(data.getSpeed()+"");
-            m_latView.setText(data.getLatitude());
-            m_lngView.setText(data.getLongitude());
-            m_activityView.setText(data.getActivity());
-            m_tcView.setText(data.getTc()+"");
-            if (data.isBackpack_open()) {
-                m_lightView.setText("opened");
-            } else {
-                m_lightView.setText("closed");
+
+            switch (msg.what){
+                case ContextData.CONTEXT_DATA:
+                    ContextData data = (ContextData) msg.obj;
+                    m_speedView.setText(data.getSpeed()+"");
+                    m_latView.setText(data.getLatitude());
+                    m_lngView.setText(data.getLongitude());
+                    m_activityView.setText(data.getActivity());
+                    m_tcView.setText(data.getTc()+"");
+                    if (data.isBackpack_open()) {
+                        m_lightView.setText("opened");
+                    } else {
+                        m_lightView.setText("closed");
+                    }
+                    break;
             }
+
         }
     };
 
@@ -208,23 +202,6 @@ public class TestSectionFragment extends Fragment{
         }
 
     }
-
-    /**
-     * Updates the items of the Bluetooth devices' spinner
-     */
-    public void updateSpinner(){
-        try {
-            ArrayList<String> threads = new ArrayList<String>();
-            Collections.addAll(threads, m_mainApp.getBTManager().getConnectedArduinos());
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(m_mainContext, android.R.layout.simple_spinner_item, threads);
-
-            Spinner devSpin = (Spinner)getView().findViewById(R.id.spinnerBluetooth);
-            devSpin.setAdapter(adapter);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
 
     /**
      * Inquires the Bluetooth-Manager for the currently connected Arduino devices.

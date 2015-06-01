@@ -23,7 +23,7 @@
     <GridLayout
         android:layout_width="match_parent"
         android:background="@drawable/bg_layout"
-        android:margin="20dp"
+        android:layout_margin="20dp"
         android:padding="10dp"
         android:layout_height="72dp"
         android:layout_weight="0.14">
@@ -92,7 +92,7 @@
     <GridLayout
         android:layout_width="match_parent"
         android:background="@drawable/bg_layout"
-        android:margin="20dp"
+        android:layout_margin="20dp"
         android:padding="10dp"
         android:layout_height="80dp">
 
@@ -127,7 +127,7 @@
     <GridLayout
         android:layout_width="match_parent"
         android:background="@drawable/bg_layout"
-        android:margin="20dp"
+        android:layout_margin="20dp"
         android:padding="10dp"
         android:layout_height="80dp"
         android:layout_weight="0.23">
@@ -164,7 +164,7 @@
     <GridLayout
         android:layout_width="match_parent"
         android:background="@drawable/bg_layout"
-        android:margin="20dp"
+        android:layout_margin="20dp"
         android:padding="10dp"
         android:layout_height="80dp"
         android:layout_weight="0.21">
