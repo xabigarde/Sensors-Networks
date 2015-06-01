@@ -120,6 +120,8 @@ public class TestSectionFragment extends Fragment{
 			}
 		});
 
+		// views
+		
 		// Action of the "Refresh list" button onClick event
 		rootView.findViewById(R.id.buttonRefresh).setOnClickListener(new View.OnClickListener() {
 			@Override
