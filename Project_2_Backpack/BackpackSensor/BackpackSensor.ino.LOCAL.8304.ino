@@ -32,7 +32,7 @@ String context;
 unsigned long dataLastUpdate = 0;
 const int dataSendInterval = 1000;
 
-float latitude, longitude, velocity, distance; //incoming data from GPS sensor
+/* ==============================================
 Accelerometer setup
 ============================================== */
 const int xPin = A0;
@@ -83,13 +83,6 @@ void loop() {
   processAcc();
 
   // Detect bag Open or closed
-  checkOpenClose();
-  
-  //   Context format: [activity  backpack(open/closed)  Temperature(float)  locality]
-  context = "walking open 20.0 Hagenberg";
-  
-  //context = activity+" "+backpackState+" "+temperature+" "+locality;
-  
   isOpen = checkOpenClose();
 
   prepareData();

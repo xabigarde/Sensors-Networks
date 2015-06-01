@@ -36,8 +36,6 @@ const int ETX = 0x03; // ETX byte
 String payload = ""; 
 int frameNum = 0;
 
-float latitude, longitude, velocity, distance;
-
 void setup_BluetoothBridge() {
   //Setup Timer2 to fire every 1ms
   TCCR2B = 0x00;        //Disbale Timer2 while we set it up
@@ -86,10 +84,12 @@ void loop_BluetoothBridge() {
       coordinates[1] = strtok(NULL, " "); // segond part = longitude
       coordinates[2] = strtok(NULL, " "); // third part = velocity
       coordinates[3] = strtok(NULL, " "); // fourth part = distance
+      coordinates[4] = strtok(NULL, " "); // fourth part = locality
       latitude = String(coordinates[0]).toFloat(); // get latitude
       longitude = String(coordinates[1]).toFloat(); // get longitude
       velocity = String(coordinates[2]).toFloat(); // get velocity
       distance = String(coordinates[3]).toFloat(); // get distance
+      locality = String(coordinates[3]); // get locality
 
       in_crc[0] = btSerial.read();  //read CRC bytes (4 bytes)
       in_crc[1] = btSerial.read();

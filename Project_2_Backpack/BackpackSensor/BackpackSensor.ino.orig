@@ -17,6 +17,7 @@ const int LEDred = 11;
 const int LEDyellow = 12;
 const int LEDonboard = 13;
 
+<<<<<<< .merge_file_a04260
 /* ==============================================
 OPenClosed
 ============================================== */
@@ -32,7 +33,7 @@ String context;
 unsigned long dataLastUpdate = 0;
 const int dataSendInterval = 1000;
 
-float latitude, longitude, velocity, distance; //incoming data from GPS sensor
+/* ==============================================
 Accelerometer setup
 ============================================== */
 const int xPin = A0;
@@ -54,6 +55,13 @@ String accStatus = "";
 const int cWALKING = 30;
 const int cSTAIRS = 200;
 const int cRUNNING = 400;
+=======
+/* The context data that is going to be sent to the phone */
+String context; // current context data container
+String activity, backpackState, temperature, locality; // walking, running, stairs, standstill...
+
+float latitude, longitude, velocity, distance; //incoming data from GPS sensor
+>>>>>>> .merge_file_a03756
 
 // timeout for accdetection
 const int ACCTimeOut = 5000;
@@ -66,8 +74,12 @@ void setup() {
   pinMode(LEDyellow, OUTPUT);
   pinMode(LEDred, OUTPUT);
   pinMode(LEDonboard, OUTPUT);
+<<<<<<< .merge_file_a04260
 
 
+=======
+  
+>>>>>>> .merge_file_a03756
   Serial.begin(9600);      // sets the serial port to 9600
 
   setup_BluetoothBridge(); // Call the setup() method of the BluetoothBridge sketch
@@ -83,6 +95,12 @@ void loop() {
   processAcc();
 
   // Detect bag Open or closed
+<<<<<<< .merge_file_a04260
+  isOpen = checkOpenClose();
+
+  prepareData();
+
+=======
   checkOpenClose();
   
   //   Context format: [activity  backpack(open/closed)  Temperature(float)  locality]
@@ -90,10 +108,7 @@ void loop() {
   
   //context = activity+" "+backpackState+" "+temperature+" "+locality;
   
-  isOpen = checkOpenClose();
-
-  prepareData();
-
+>>>>>>> .merge_file_a03756
   loop_BluetoothBridge(); // Call the loop() method of the BluetoothBridge sketch
   //  execution blocked until loop_BluetoothBridge() ends
 
@@ -103,6 +118,7 @@ void loop() {
 
 }
 
+<<<<<<< .merge_file_a04260
 
 void prepareData()
 {
@@ -124,6 +140,8 @@ void prepareData()
 
 }
 
+=======
+>>>>>>> .merge_file_a03756
 bool checkOpenClose() {
 
 #ifdef DEBUG

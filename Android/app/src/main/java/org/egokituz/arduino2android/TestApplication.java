@@ -53,6 +53,7 @@ public class TestApplication extends Application {
     private BTManagerThread m_BTManager_thread;
     private LoggerThread m_Logger_thread;
     private GPSModule m_GPS_thread;
+    private ContextThread m_contextThread;
 
     public boolean m_finishApp; // Flag for managing activity termination
 
@@ -83,12 +84,14 @@ public class TestApplication extends Application {
         // Instantiate the different modules required for a test. Note that the modules are not started, only created.
         m_Logger_thread = new LoggerThread(m_AppContext, mainAppHandler);
         m_GPS_thread = new GPSModule(m_AppContext, mainAppHandler);
+        m_contextThread = new ContextThread(m_AppContext, mainAppHandler);
 
         // start running the module threads
         startModuleThreads();
 
         // register the data listeners
         registerTestDataListener(m_Logger_thread.loggerThreadHandler);
+        registerTestDataListener(m_contextThread.contextThreadHandler);
     }
 
     /**
@@ -101,6 +104,9 @@ public class TestApplication extends Application {
 
         if(!m_GPS_thread.isAlive())
             m_GPS_thread.start();
+
+        if(!m_contextThread.isAlive())
+            m_contextThread.start();
 
         // Instantiate the Bluetooth Manager thread
         try {
