@@ -74,12 +74,12 @@ public class LoggerThread extends Thread{
 	private final String FILE_PARAMETERS = "testParameters.txt";
 
 	/**
-	 * Context of the main {@link Application} of this app 
+	 * Context of the main {Application} of this app
 	 */
 	private Context m_AppContext;
 	
 	/**
-	 * Handler of the main {@link Application} class
+	 * Handler of the main {Application} class
 	 */
 	private Handler m_mainHandler;
 

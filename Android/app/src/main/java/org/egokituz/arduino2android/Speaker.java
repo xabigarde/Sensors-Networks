@@ -13,6 +13,8 @@ import java.util.Locale;
 public class Speaker implements TextToSpeech.OnInitListener {
 
     private final static String TAG = "Speaker";
+    public static final int LONG_DURATION = 5000;
+    public static final int SHORT_DURATION = 1200;
 
     private TextToSpeech tts;
 

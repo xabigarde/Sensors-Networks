@@ -1,14 +1,20 @@
 package org.egokituz.arduino2android.models;
 
+import android.util.Log;
+
 /**
  * Created by Elena on 01/06/2015.
  */
 public class ContextData {
 
+    private static final String TAG = "ContextData";
+
     public static final int CONTEXT_DATA = 69841326;
 
     final static String WALKING = "Walking";
     final static String STANDING = "Standing";
+    final static String STAIRS = "Going through the stairs";
+    final static String RUNNING = "Running";
 
 
     private float speed = 0;
@@ -17,6 +23,9 @@ public class ContextData {
     private boolean backpack_open = false;
     private String activity = "not detected";
     private double tc =0.0;
+    private String locality = "Linz";
+
+    private final String delims = "[ ]+";
 
     /**
      * Constructor from string containing data values.
@@ -28,10 +37,17 @@ public class ContextData {
     public ContextData(String str){
         //TODO parse string to get values
 
-        //TODO remove this hardcoded data:
-        backpack_open = true;
-        activity = "Running0";
-        tc = 20.0;
+        String[] tokens = str.split(delims);
+        if(tokens.length != 4)
+            Log.e(TAG, "Bad context string!");
+
+        activity = tokens[0];
+        String bagStatus = tokens[1];
+        if(bagStatus.equals("open"))
+            backpack_open = true;
+        else
+            backpack_open = false;
+        tc = Double.parseDouble(tokens[2]);
     }
 
     public void setTc(double tc) {
@@ -81,5 +97,13 @@ public class ContextData {
 
     public String getActivity() {
         return activity;
+    }
+
+    public String getLocality() {
+        return locality;
+    }
+
+    public void setLocality(String locality) {
+        this.locality = locality;
     }
 }

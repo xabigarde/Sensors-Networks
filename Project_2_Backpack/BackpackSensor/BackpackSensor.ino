@@ -11,7 +11,11 @@ const int LEDred = 11;
 const int LEDyellow = 12;
 const int LEDonboard = 13;
 
-String context;
+/* The context data that is going to be sent to the phone */
+String context; // current context data container
+String activity, backpackState, temperature, locality; // walking, running, stairs, standstill...
+
+float latitude, longitude, velocity, distance; //incoming data from GPS sensor
 
 enum Color { RED, GREEN, BLUE };
 
@@ -22,7 +26,6 @@ void setup() {
   pinMode(LEDyellow, OUTPUT);
   pinMode(LEDred, OUTPUT);
   pinMode(LEDonboard, OUTPUT);
-  
   
   Serial.begin(9600);      // sets the serial port to 9600
   
@@ -37,13 +40,14 @@ void loop() {
   // Detect bag Open or closed
   checkOpenClose();
   
-  context = "New context: blablablabla";
+  //   Context format: [activity  backpack(open/closed)  Temperature(float)  locality]
+  context = "walking open 20.0 Hagenberg";
+  
+  //context = activity+" "+backpackState+" "+temperature+" "+locality;
+  
   loop_BluetoothBridge(); // Call the loop() method of the BluetoothBridge sketch
   //  execution blocked until loop_BluetoothBridge() ends
 }
-
-
-
 
 bool checkOpenClose() {
 
