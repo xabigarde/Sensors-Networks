@@ -102,7 +102,7 @@ void loop() {
   //  execution blocked until loop_BluetoothBridge() ends
 
   // Clear context to avoid sending data again
-  context = "";
+  //context = "";
 }
 
 // Prepares data to be sent to the client

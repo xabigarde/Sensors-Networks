@@ -110,7 +110,7 @@ void loop_BluetoothBridge() {
   
   payload = context;
   sendMessageIfPossible();
-  
+  context ="";
   delay(50);
 }//end loop()
 

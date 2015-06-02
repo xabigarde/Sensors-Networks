@@ -87,6 +87,8 @@ public class GPSModule extends Thread implements LocationListener {
                     loc.getLongitude(), 1);
             if (addresses.size() > 0)
                 cityName = addresses.get(0).getLocality();
+            else
+                cityName = "N/A";
         }
         catch (Exception e) {
             e.printStackTrace();

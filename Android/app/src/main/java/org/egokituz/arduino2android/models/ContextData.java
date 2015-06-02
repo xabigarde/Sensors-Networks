@@ -1,7 +1,5 @@
 package org.egokituz.arduino2android.models;
 
-import android.util.Log;
-
 /**
  * Created by Elena on 01/06/2015.
  */
@@ -36,7 +34,7 @@ public class ContextData {
      */
     public ContextData(String str){
         //TODO parse string to get values
-        Log.v(TAG, "New context string received: "+str);
+        //Log.v(TAG, "New context string received: "+str);
 
         if(!str.equals("")){
             String[] tokens = str.split(delims);
