@@ -58,7 +58,7 @@ const String strStairs = "stairs";
 const String strRunning = "running";
 String accStatus = "";
 
-const int cWALKING = 30;
+const int cWALKING = 50;
 const int cSTAIRS = 200;
 const int cRUNNING = 400;
 
@@ -242,7 +242,11 @@ float getTemperature()
 {
 
   temperature = Thermister(analogRead(tempPin));
+
+#ifdef DEBUG
   Serial.println(temperature);
+#endif
+
   return temperature;
 }
 
