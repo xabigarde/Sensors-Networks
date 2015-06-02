@@ -118,9 +118,9 @@ void prepareData()
     //context = activity+" "+backpackState+" "+temperature+" "+locality;
 
     // Prepare data to send
-    context = accStatus + " " + backpackState + " " + temperature + " " + locality;
+    context = accStatus + " " + backpackState + " " + temperature + " " + " nope ";
 
-    Serial.print("Data sent: ");
+    Serial.print("Data to send: ");
     Serial.println(context);
 
     // Update data send time
