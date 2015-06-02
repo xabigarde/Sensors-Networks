@@ -89,7 +89,7 @@ void loop_BluetoothBridge() {
       longitude = String(coordinates[1]).toFloat(); // get longitude
       velocity = String(coordinates[2]).toFloat(); // get velocity
       distance = String(coordinates[3]).toFloat(); // get distance
-      locality = String(coordinates[3]); // get locality
+      locality = String(coordinates[4]); // get locality
 
       in_crc[0] = btSerial.read();  //read CRC bytes (4 bytes)
       in_crc[1] = btSerial.read();
@@ -109,9 +109,12 @@ void loop_BluetoothBridge() {
   }//end while(btSerial.available())
   
   payload = context;
-  sendMessageIfPossible();
-  context ="";
-  delay(50);
+  if(payload != ""){
+    sendMessageIfPossible();
+    context = "";
+  }
+  
+  //delay(50);
 }//end loop()
 
 

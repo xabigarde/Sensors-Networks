@@ -46,10 +46,6 @@ public class ContextThread extends Thread {
                 speaker.speak("You are now "+newContext.getActivity());
                 speaker.pause(Speaker.SHORT_DURATION);
             }
-            if(oldContext.getLocality().equals("Linz") && newContext.getLocality().equals("Hagenberg")) {
-                speaker.speak("You arrived safely in Hagenberg.");
-                speaker.pause(Speaker.SHORT_DURATION);
-            }
             if(oldContext.getSpeed() < newContext.getSpeed() && !speedWarned){
                 speedWarned = true;
                 speaker.speak("You are going faster");
@@ -65,6 +61,21 @@ public class ContextThread extends Thread {
             } else if(oldContext.isBackpack_open() && !newContext.isBackpack_open()){
                 speaker.speak("Your backpack is now closed.");
                 speaker.pause(Speaker.SHORT_DURATION);
+            }
+            if(oldContext.getTc() < newContext.getTc()+1.0){
+                speaker.speak("Temperature is rising. Go eat an ice cream!");
+                speaker.pause(Speaker.SHORT_DURATION);
+            }
+            if(oldContext.getTc() > newContext.getTc()){
+                speaker.speak("Temperature is rising. Go eat an ice cream!");
+                speaker.pause(Speaker.SHORT_DURATION);
+            }
+            if(!oldContext.getLocality().equals(newContext.getLocality())){
+                if(oldContext.getLocality().equals("Linz") && newContext.getLocality().equals("Hagenberg")) {
+                    speaker.speak("You arrived safely in Hagenberg.");
+                }
+                if(newContext.getLocality().equals("Disco"))
+                    speaker.speak("Move that butt to the beat!");
             }
         }
         oldContext = newContext;

@@ -105,7 +105,7 @@ public class GPSModule extends Thread implements LocationListener {
         Message sendMsg = m_mainHandler.obtainMessage(TestApplication.MESSAGE_GPS_LOCATION);
         sendMsg.obj = loc;
         sendMsg.arg1 = (int) distance_since_last_location;  // safe cast, since there's no way the distance (long) will be higher than the Integer.MAX_VALUE = 2147483647
-        sendMsg.sendToTarget();
+        //sendMsg.sendToTarget(); //TODO uncomment this line
 
         m_lastLocation = loc; // replace the previous last known location with the new one
 
