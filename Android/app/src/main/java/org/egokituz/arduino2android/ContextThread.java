@@ -39,6 +39,8 @@ public class ContextThread extends Thread {
     };
 
     private boolean speedWarned = false;
+    private boolean temperatureRiseWarned = false;
+    private boolean temperatureFallWarned = false;
 
     private void contextChanged(ContextData newContext) {
         if(oldContext!=null){
@@ -62,14 +64,24 @@ public class ContextThread extends Thread {
                 speaker.speak("Your backpack is now closed.");
                 speaker.pause(Speaker.SHORT_DURATION);
             }
-            if(oldContext.getTc() < newContext.getTc()+1.0){
-                speaker.speak("Temperature is rising. Go eat an ice cream!");
-                speaker.pause(Speaker.SHORT_DURATION);
-            }
-            if(oldContext.getTc() > newContext.getTc()){
-                speaker.speak("Temperature is rising. Go eat an ice cream!");
-                speaker.pause(Speaker.SHORT_DURATION);
-            }
+            if(newContext.getTc()>25.0 ) {
+                if(!temperatureRiseWarned) {
+                    temperatureRiseWarned = true;
+                    temperatureFallWarned = false;
+                    speaker.speak("Temperature is rising. Go eat an ice cream!");
+                    speaker.pause(Speaker.SHORT_DURATION);
+                }
+            } else
+                temperatureRiseWarned = false;
+            if(newContext.getTc()<22.0){
+                if(!temperatureFallWarned) {
+                    temperatureFallWarned = true;
+                    temperatureRiseWarned = false;
+                    speaker.speak("Temperature is falling, go grab a coat!");
+                    speaker.pause(Speaker.SHORT_DURATION);
+                }
+            } else
+                temperatureFallWarned = false;
             if(!oldContext.getLocality().equals(newContext.getLocality())){
                 if(oldContext.getLocality().equals("Linz") && newContext.getLocality().equals("Hagenberg")) {
                     speaker.speak("You arrived safely in Hagenberg.");
@@ -92,6 +104,9 @@ public class ContextThread extends Thread {
 
         //TODO remove hardcoded initial context
         oldContext = new ContextData("standstill closed 10.0 Linz");
+
+        speaker.speak("Hello, I am your sentient backpack!");
+        speaker.pause(Speaker.SHORT_DURATION);
     }
 
     @Override
