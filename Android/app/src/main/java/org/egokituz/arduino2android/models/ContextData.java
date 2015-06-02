@@ -21,9 +21,9 @@ public class ContextData {
     private String latitude = "not found";
     private String longitude = "not found";
     private boolean backpack_open = false;
-    private String activity = "not detected";
+    private String activity = "N/A";
     private double tc =0.0;
-    private String locality = "Linz";
+    private String locality = "N/A";
 
     private final String delims = "[ ]+";
 
@@ -36,18 +36,30 @@ public class ContextData {
      */
     public ContextData(String str){
         //TODO parse string to get values
+        Log.v(TAG, "New context string received: "+str);
 
-        String[] tokens = str.split(delims);
-        if(tokens.length != 4)
-            Log.e(TAG, "Bad context string!");
+        if(!str.equals("")){
+            String[] tokens = str.split(delims);
 
-        activity = tokens[0];
-        String bagStatus = tokens[1];
-        if(bagStatus.equals("open"))
-            backpack_open = true;
-        else
+            activity = tokens[0];
+            String bagStatus = tokens[1];
+            if(bagStatus.equals("open"))
+                backpack_open = true;
+            else
+                backpack_open = false;
+            tc = Double.parseDouble(tokens[2]);
+
+            if(tokens.length >=4)
+                locality = tokens[3];
+            else
+                locality = "N/A";
+        } else {
+            activity = "N/A";
             backpack_open = false;
-        tc = Double.parseDouble(tokens[2]);
+            tc = 0.0;
+            locality = "N/A";
+        }
+
     }
 
     public void setTc(double tc) {

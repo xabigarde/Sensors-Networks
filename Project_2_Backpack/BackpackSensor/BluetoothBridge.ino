@@ -134,14 +134,14 @@ void sendMessageIfPossible(){
 }
 
 // Send a message to the Bluetooth serial port
-void sendMessage(int MSGID, char payload[], int length) {
+void sendMessage(int MSGID, char out_payload[], int length) {
   unsigned char buf[4];
   buf[0] = (length >> 24) & 0xFF;
   buf[1] = (length >> 16) & 0xFF;
   buf[2] = (length >> 8) & 0xFF;
   buf[3] = (length) & 0xFF;
   
-  long crc = crc_string(payload);
+  long crc = crc_string(out_payload);
   unsigned char crcBytes[sizeof(long int)];
   memcpy(crcBytes,&crc,sizeof(long int));
     
@@ -154,13 +154,13 @@ void sendMessage(int MSGID, char payload[], int length) {
   btSerial.write(MSGID);
   btSerial.write(frameNum);
   btSerial.write(buf, sizeof(buf));
-  btSerial.write(payload);
+  btSerial.write(out_payload);
   btSerial.write(crcBytes,sizeof(crcBytes));
   btSerial.write(ETX);
   
   Serial.print(length);
   Serial.print(": ");
-  Serial.print(payload);
+  Serial.print(out_payload);
   Serial.println("");
 }
 

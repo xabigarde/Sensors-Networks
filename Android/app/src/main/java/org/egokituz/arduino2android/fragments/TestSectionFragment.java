@@ -36,7 +36,9 @@ public class TestSectionFragment extends Fragment{
 
     public static final int REQUEST_ENABLE_BT_RESULT = 1;
 
-    TextView m_lngView, m_latView, m_speedView, m_activityView, m_tcView, m_lightView;
+    //TextView m_lngView, m_latView, m_speedView, m_activityView, m_tcView, m_lightView;
+    TextView m_activityView, m_tcView, m_lightView;
+
 
     Spinner spinnerBluetooth;
     ListView devicesListView;
@@ -127,9 +129,9 @@ public class TestSectionFragment extends Fragment{
         });
 
         // views
-        m_speedView = (TextView) rootView.findViewById(R.id.speed);
-        m_latView = (TextView) rootView.findViewById(R.id.lat);
-        m_lngView = (TextView) rootView.findViewById(R.id.lng);
+        //m_speedView = (TextView) rootView.findViewById(R.id.speed);
+        //m_latView = (TextView) rootView.findViewById(R.id.lat);
+        //m_lngView = (TextView) rootView.findViewById(R.id.lng);
         m_lightView = (TextView) rootView.findViewById(R.id.light);
         m_tcView = (TextView) rootView.findViewById(R.id.tc);
         m_activityView = (TextView) rootView.findViewById(R.id.activity);
@@ -157,9 +159,9 @@ public class TestSectionFragment extends Fragment{
      * @param data
      */
     private void updateContext(ContextData data){
-        m_speedView.setText(data.getSpeed()+"");
+        /*m_speedView.setText(data.getSpeed()+"");
         m_latView.setText(data.getLatitude());
-        m_lngView.setText(data.getLongitude());
+        m_lngView.setText(data.getLongitude());*/
         m_activityView.setText(data.getActivity());
         m_tcView.setText(data.getTc()+"");
         if (data.isBackpack_open()) {
